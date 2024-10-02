@@ -4,34 +4,33 @@ import OpenSLR_org_88 from "./OpenSLR_org_88/OpenSLR_org_88";
 import path from "node:path";
 
 (function Main() {
+
+    
     console.clear();
-    console.info("Working directory: " + __dirname + "\n");
-    console.info("Executable file: " + __filename + "\n");
-    console.info("Version of TensorFlow.js (C++ native Node.js): " + version["tfjs-core"] + "\n");
+    //console.info("Working directory: " + __dirname + "\n");
+    //console.info("Executable file: " + __filename + "\n");
+    //console.info("Version of TensorFlow.js (C++ native Node.js): " + version["tfjs-core"] + "\n");
+
     const decompression_stream = new DecompressionStream("gzip");
-fetch("https://nudger.fr/opendata/gtin-open-data.zip").then(async (response) => {
+fetch("https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz").then(async (response) => {
     // 'response.body' is a 'ReadableStream' object:
     console.assert(response.body.constructor.name === 'ReadableStream');
     console.assert(response.body.locked === false /*&& response.body.state === 'readable'*/);
-    //console.log(response.json());
-
-    //const data_stream: ReadableStream<number> = response.body.pipeThrough(decompression_stream);
-    //for await (const chunk of Chunks(data_stream.getReader())) {
-        //console.assert(data_stream.locked); // 'getReader()' locks the stream...
-        // Raw data stream:
-        //console.assert(chunk.constructor.name === 'Uint8Array');
-        // console.info(`Chunk of size ${chunk.length}... with raw data: ${chunk}`);
-        // Data stream as (incomplete) JSON. Result *CANNOT* be parsed as JSON:
-        // console.info((new TextDecoder()).decode(chunk));
-        /**
-         * Caution, loss of data ('import * as Parser_with_data_loss from 'partial-json-parser';'):
-        */
-        //const incomplete_data: Array<City> = Parser_with_data_loss((new TextDecoder()).decode(chunk));
-        //console.assert(incomplete_data.constructor.name === 'Array');
-        // Stop, first chunk only for test:
-        //break;
-    //}
+   // console.log(response.body)
+   // console.log(response.text())
+    const data_stream: ReadableStream<number> = response.body.pipeThrough(decompression_stream);
+    //console.log(data_stream.locked);
+    
+    for await (const chunk of Chunks(data_stream.getReader())) {
+        console.log(chunk);
+        break;
+    }
 });
+
+
+
+
+
     /** CSV */
     // DMiNer.Test_CSV();
     // DMiNer.Papa_parse();
@@ -45,6 +44,20 @@ fetch("https://nudger.fr/opendata/gtin-open-data.zip").then(async (response) => 
 
     //OpenSLR_org_88.Test();
 })();
+
+
+function Chunks(stream_reader: ReadableStreamDefaultReader) {
+	return {
+    	async* [Symbol.asyncIterator]() {
+        	let result = await stream_reader.read();
+        	while (!result.done) {
+            	yield result.value;
+            	result = await stream_reader.read();
+        	}
+    	},
+	};
+}
+
 
 
 

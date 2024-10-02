@@ -28,6 +28,7 @@
     "fuse.js": "^7.0.0",
     "imicros-feel-interpreter": "^0.0.10",
     "koa": "^2.15.3",
+    "node-fetch": "^3.3.2",
     "node-wav": "^0.0.2",
     "papaparse": "^5.4.1",
     "partial-json-parser": "^1.2.2",
