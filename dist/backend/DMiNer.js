@@ -122,7 +122,7 @@ class Randomizer {
     }
 }
 class DMiNer {
-    static async Get_DMN(test_case = DMiNer.DMN_example1) {
+    static async Get_DMN(test_case = DMiNer.DMN_example2) {
         // console.info("Where are we? " + __dirname + '\n');
         const where = path.join(path.resolve(__dirname, '../..'), DMiNer.DATA);
         try {
