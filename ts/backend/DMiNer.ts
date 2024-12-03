@@ -3,7 +3,6 @@ import * as https from 'node:https'; // https://nodejs.org/api/https.html
 import * as path from 'node:path';
 
 // https://www.tensorflow.org/js/tutorials/setup#nodejs_setup
-import {data} from '@tensorflow/tfjs'; // JavaScript (slower)...
 // La version 'tfjs-node' appelle le code C++ natif plus rapide...
 // Problème config. pour 'tfjs-node' (https://stackoverflow.com/questions/57537386/cannot-import-tensorflow-tfjs-node-in-nodejs) :
 /**
@@ -173,19 +172,7 @@ export class DMiNer {
         }
     }
 
-    static async Test_CSV() {
-        /* Tensor.js API is effective, but data on the Web are *RARELY* in pretty shape! */
-        const addresses: data.CSVDataset = data.csv(DMiNer.CSV_example_good_format_format);
-        addresses.columnNames().then(item => console.log(item));
-        // https://nodejs.org/api/url.html#constructing-a-url-from-component-parts-and-getting-the-constructed-string
-        /**
-         * Attention : Node.js et donc TensorFlow.js bloquent au delà de 2GB...
-         */
-        const openfoodfacts: data.CSVDataset = data.csv(DMiNer.CSV_example_bad_format);
-        openfoodfacts.columnNames().then(item => console.log(item));
-        // Les données sont mal formatées/préparées pour TensorFlow.js donc léger plantage :
-        // await openfoodfacts.forEachAsync(item => console.log(item));
-    }
+
 
     static Papa_parse() { // Test CSV parsing...
         fetch(DMiNer.CSV_example_good_format_format).then(async (response) => {

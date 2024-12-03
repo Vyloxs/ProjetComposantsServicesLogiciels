@@ -1,1 +1,1 @@
-{"root":["../../ts/backend/Backend_decision_maker.ts","../../ts/backend/DMiNer.ts","../../ts/backend/Koa.ts","../../ts/backend/Main.ts","../../ts/backend/OpenSLR_org_88/OpenSLR_org_88.ts","../../ts/backend/OpenSLR_org_88/Spectrogram.ts"],"version":"5.6.2"}
+{"root":["../../ts/backend/backend_decision_maker.ts","../../ts/backend/dminer.ts","../../ts/backend/koa.ts","../../ts/backend/main.ts","../../ts/backend/openslr_org_88/openslr_org_88.ts","../../ts/backend/openslr_org_88/spectrogram.ts"],"version":"5.6.2"}
