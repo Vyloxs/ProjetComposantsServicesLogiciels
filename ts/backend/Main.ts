@@ -112,8 +112,8 @@ async function handleZipFile(url: string) {
                                 return;
                             }
 
-                            const produit = new nudgerTest(row['gtin'], row['gs1_country']);
-                            console.log(produit.toString(), "je suis l'item numéro", itemCount);
+                           //const produit = new nudgerTest(row['gtin'], row['gs1_country']);
+                            //console.log(produit.toString(), "je suis l'item numéro", itemCount);
                             itemCount++;
                         })
                         .on('end', () => {
@@ -136,6 +136,56 @@ async function handleZipFile(url: string) {
 
 const url = 'https://nudger.fr/opendata/gtin-open-data.zip';
 handleZipFile(url);
+
+
+
+
+async function fetchAndParseCSV(url: string) {
+    try {
+        console.log(`Récupération du fichier CSV depuis : ${url}`);
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Erreur lors de la récupération des données : ${response.statusText}`);
+        }
+
+        const text = await response.text(); // Convertir la réponse en texte brut (CSV)
+        console.log("Fichier CSV récupéré avec succès.");
+
+        // Utilisation de PapaParse pour analyser les données CSV
+        Papa.parse(text, {
+            header: true, // Le fichier contient une ligne d'en-tête
+            dynamicTyping: true, // Convertir automatiquement les types
+            skipEmptyLines: true, // Ignorer les lignes vides
+            complete: (results) => {
+                console.log("Analyse terminée. Données récupérées :");
+
+                // Traitement des données : ne garder que `code_insee` et `nom_standard`
+                results.data.forEach((row: any) => {
+                    if (row['code_insee'] && row['nom_standard']) {
+                        const produitVille = new ProduitVille(row['code_insee'], row['nom_standard']);
+                        console.log(produitVille.toString());
+                    } else {
+                        console.warn("Ligne ignorée en raison de colonnes manquantes :", row);
+                    }
+                });
+            },
+            error: (error) => {
+                console.error("Erreur lors de l'analyse du CSV :", error);
+            },
+        });
+    } catch (error) {
+        console.error("Erreur lors du fetch ou du traitement du fichier CSV :", error);
+    }
+}
+
+// URL du dataset CSV
+const csvUrl = 'https://static.data.gouv.fr/resources/communes-et-villes-de-france-en-csv-excel-json-parquet-et-feather/20241126-142408/communes-france-2025.csv';
+
+// Appel de la fonction pour traiter le dataset
+fetchAndParseCSV(csvUrl);
+
+
 
 (function Main() {
     const produits: Array<Produit> = new Array<Produit>;
@@ -192,6 +242,21 @@ class Produit {
 
 }
 
+
+
+class ProduitVille {
+    code_insee: string;
+    nom_commune: string;
+
+    constructor(code_insee: string, nom_commune: string) {
+        this.code_insee = code_insee;
+        this.nom_commune = nom_commune;
+    }
+
+    toString(): string {
+        return `Code INSEE: ${this.code_insee}, Nom: ${this.nom_commune}`;
+    }
+}
 
 class nudgerTest {
     gtin: string;
